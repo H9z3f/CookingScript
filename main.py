@@ -1,207 +1,200 @@
-import pyautogui as pag
-import keyboard as kb
+from PIL.Image import open
+from PIL import UnidentifiedImageError
+from pyperclip import copy
+from webbrowser import open_new
+import sys
+from requests import get
+from pyautogui import alert, confirm, locateOnScreen, rightClick, leftClick
 from time import sleep
-from PIL import Image
-import requests as req
+from keyboard import is_pressed
 
 
-def rSalad(defPos, imgData):
+def rSalad(staticPositions):
     while True:
-        mPos = los(imgData["meat"], confidence=0.7)
-        ePos = los(imgData["eggs"], confidence=0.7)
-        vPos = los(imgData["vegetable"], confidence=0.7)
-        if mPos and ePos and vPos:
-            mt(mPos[0], mPos[1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(ePos[0], ePos[1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(vPos[0], vPos[1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["knife"][0], defPos["knife"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["fire"][0], defPos["fire"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            pag.leftClick(x=defPos["start"][0], y=defPos["start"][1])
+        meatPosition = locateOnScreen(imageData["meat"], confidence=0.7)
+        eggsPosition = locateOnScreen(imageData["eggs"], confidence=0.7)
+        vegetablePosition = locateOnScreen(imageData["vegetable"], confidence=0.7)
+        if meatPosition and eggsPosition and vegetablePosition:
+            rightClick(meatPosition[0], meatPosition[1])
+            rightClick(eggsPosition[0], eggsPosition[1])
+            rightClick(vegetablePosition[0], vegetablePosition[1])
+            rightClick(staticPositions["fire"][0], staticPositions["fire"][1])
+            rightClick(staticPositions["knife"][0], staticPositions["knife"][1])
+            leftClick(staticPositions["start"][0], staticPositions["start"][1])
             sleep(5)
         else:
-            pag.alert(text="You ran out of the required ingredients.", button="Ok")
-            main()
+            ranOut()
 
 
-def stew(defPos, imgData):
+def stew(staticPositions):
     while True:
-        mPos = los(imgData["meat"], confidence=0.7)
-        vPos = los(imgData["vegetable"], confidence=0.7)
-        if mPos and vPos:
-            mt(mPos[0], mPos[1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(vPos[0], vPos[1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["water"][0], defPos["water"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["fire"][0], defPos["fire"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            pag.leftClick(x=defPos["start"][0], y=defPos["start"][1])
+        meatPosition = locateOnScreen(imageData["meat"], confidence=0.7)
+        vegetablePosition = locateOnScreen(imageData["vegetable"], confidence=0.7)
+        if meatPosition and vegetablePosition:
+            rightClick(meatPosition[0], meatPosition[1])
+            rightClick(vegetablePosition[0], vegetablePosition[1])
+            rightClick(staticPositions["fire"][0], staticPositions["fire"][1])
+            rightClick(staticPositions["water"][0], staticPositions["water"][1])
+            leftClick(staticPositions["start"][0], staticPositions["start"][1])
             sleep(5)
         else:
-            pag.alert(text="You ran out of the required ingredients.", button="Ok")
-            main()
+            ranOut()
 
 
-def vSmoothie(defPos, imgData):
+def vSmoothie(staticPositions):
     while True:
-        vPos = los(imgData["vegetable"], confidence=0.7)
-        if vPos:
-            mt(vPos[0], vPos[1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["water"][0], defPos["water"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["whisk"][0], defPos["whisk"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            pag.leftClick(x=defPos["start"][0], y=defPos["start"][1])
+        vegetablePosition = locateOnScreen(imageData["vegetable"], confidence=0.7)
+        if vegetablePosition:
+            rightClick(vegetablePosition[0], vegetablePosition[1])
+            rightClick(staticPositions["water"][0], staticPositions["water"][1])
+            rightClick(staticPositions["whisk"][0], staticPositions["whisk"][1])
+            leftClick(staticPositions["start"][0], staticPositions["start"][1])
             sleep(5)
         else:
-            pag.alert(text="You ran out of the required ingredients.", button="Ok")
-            main()
+            ranOut()
 
 
-def fSmoothie(defPos, imgData):
+def fSmoothie(staticPositions):
     while True:
-        fPos = los(imgData["fruit"], confidence=0.7)
-        if fPos:
-            mt(fPos[0], fPos[1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["water"][0], defPos["water"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["whisk"][0], defPos["whisk"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            pag.leftClick(x=defPos["start"][0], y=defPos["start"][1])
+        fruitPosition = locateOnScreen(imageData["fruit"], confidence=0.7)
+        if fruitPosition:
+            rightClick(fruitPosition[0], fruitPosition[1])
+            rightClick(staticPositions["water"][0], staticPositions["water"][1])
+            rightClick(staticPositions["whisk"][0], staticPositions["whisk"][1])
+            leftClick(staticPositions["start"][0], staticPositions["start"][1])
             sleep(5)
         else:
-            pag.alert(text="You ran out of the required ingredients.", button="Ok")
-            main()
+            ranOut()
 
 
-def vSalad(defPos, imgData):
+def vSalad(staticPositions):
     while True:
-        vPos = los(imgData["vegetable"], confidence=0.7)
-        if vPos:
-            mt(vPos[0], vPos[1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["knife"][0], defPos["knife"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            pag.leftClick(x=defPos["start"][0], y=defPos["start"][1])
+        vegetablePosition = locateOnScreen(imageData["vegetable"], confidence=0.7)
+        if vegetablePosition:
+            rightClick(vegetablePosition[0], vegetablePosition[1])
+            rightClick(staticPositions["knife"][0], staticPositions["knife"][1])
+            leftClick(staticPositions["start"][0], staticPositions["start"][1])
             sleep(5)
         else:
-            pag.alert(text="You ran out of the required ingredients.", button="Ok")
-            main()
+            ranOut()
 
 
-def fSalad(defPos, imgData):
+def fSalad(staticPositions):
     while True:
-        fPos = los(imgData["fruit"], confidence=0.7)
-        if fPos:
-            mt(fPos[0], fPos[1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["knife"][0], defPos["knife"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            pag.leftClick(x=defPos["start"][0], y=defPos["start"][1])
+        fruitPosition = locateOnScreen(imageData["fruit"], confidence=0.7)
+        if fruitPosition:
+            rightClick(fruitPosition[0], fruitPosition[1])
+            rightClick(staticPositions["knife"][0], staticPositions["knife"][1])
+            leftClick(staticPositions["start"][0], staticPositions["start"][1])
             sleep(5)
         else:
-            pag.alert(text="You ran out of the required ingredients.", button="Ok")
-            main()
+            ranOut()
 
 
-def sEggs(defPos, imgData):
+def sEggs(staticPositions):
     while True:
-        ePos = los(imgData["eggs"], confidence=0.7)
-        if ePos:
-            mt(ePos[0], ePos[1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            mt(defPos["fire"][0], defPos["fire"][1])
-            dt(defPos["knife"][0], defPos["knife"][1] - 150, 0.25)
-            pag.leftClick(x=defPos["start"][0], y=defPos["start"][1])
+        eggsPosition = locateOnScreen(imageData["eggs"], confidence=0.7)
+        if eggsPosition:
+            rightClick(eggsPosition[0], eggsPosition[1])
+            rightClick(staticPositions["fire"][0], staticPositions["fire"][1])
+            leftClick(staticPositions["start"][0], staticPositions["start"][1])
             sleep(5)
         else:
-            pag.alert(text="You ran out of the required ingredients.", button="Ok")
-            main()
+            ranOut()
+
+
+def ranOut():
+    alert(text="You ran out of the required ingredients.", button="Ok")
+    main()
 
 
 def main():
-    pag.alert(text="Choose the dish you are interested in.\nGet close to the stove and press the 'e' key.\n"
-                   "To change the recipe or stop the operation press 'esc'.", button="Start")
-    dish = pag.confirm(text="Choose the dish", buttons=["Russian salad[5]", "Stew[3]", "Vegetable smoothie[2]",
-                                                        "Fruit smoothie[2]", "Vegetable salad", "Fruit salad",
-                                                        "Scrambled eggs"])
-    if dish is None:
-        return 0
+    dish = confirm(text="Choose the dish:", buttons=["Russian salad[5]", "Stew[3]", "Vegetable smoothie[2]",
+                                                     "Fruit smoothie[2]", "Vegetable salad", "Fruit salad",
+                                                     "Scrambled eggs"])
+    if dish == None:
+        sys.exit()
     while True:
-        if kb.is_pressed("e"):
+        if is_pressed("e"):
             sleep(0.5)
-            defPos = {
-                "knife": los(data["knife"], confidence=0.7),
-                "whisk": los(data["whisk"], confidence=0.7),
-                "fire": los(data["fire"], confidence=0.7),
-                "water": los(data["water"], confidence=0.7),
-                "start": los(data["start"], confidence=0.7)
+            staticPositions = {
+                "fire": locateOnScreen(imageData["fire"], confidence=0.7),
+                "knife": locateOnScreen(imageData["knife"], confidence=0.7),
+                "start": locateOnScreen(imageData["start"], confidence=0.7),
+                "water": locateOnScreen(imageData["water"], confidence=0.7),
+                "whisk": locateOnScreen(imageData["whisk"], confidence=0.7)
             }
             match dish:
-                case "Stew[3]":
-                    stew(defPos, data)
-                case "Vegetable smoothie[2]":
-                    vSmoothie(defPos, data)
-                case "Fruit smoothie[2]":
-                    fSmoothie(defPos, data)
                 case "Russian salad[5]":
-                    rSalad(defPos, data)
+                    rSalad(staticPositions)
+                case "Stew[3]":
+                    stew(staticPositions)
+                case "Vegetable smoothie[2]":
+                    vSmoothie(staticPositions)
+                case "Fruit smoothie[2]":
+                    fSmoothie(staticPositions)
                 case "Vegetable salad":
-                    vSalad(defPos, data)
+                    vSalad(staticPositions)
                 case "Fruit salad":
-                    fSalad(defPos, data)
+                    fSalad(staticPositions)
                 case "Scrambled eggs":
-                    sEggs(defPos, data)
+                    sEggs(staticPositions)
 
 
 if __name__ == "__main__":
-    los = pag.locateOnScreen
-    mt = pag.moveTo
-    dt = pag.dragTo
-    data = {
-        "knife": Image.open(req.get(
-            "https://github.com/H9z3f/CookingScript/blob/main/images/knife.png?raw=true",
-            stream=True
-        ).raw),
-        "whisk": Image.open(req.get(
-            "https://github.com/H9z3f/CookingScript/blob/main/images/whisk.png?raw=true",
-            stream=True
-        ).raw),
-        "fire": Image.open(req.get(
-            "https://github.com/H9z3f/CookingScript/blob/main/images/fire.png?raw=true",
-            stream=True
-        ).raw),
-        "water": Image.open(req.get(
-            "https://github.com/H9z3f/CookingScript/blob/main/images/water.png?raw=true",
-            stream=True
-        ).raw),
-        "start": Image.open(req.get(
-            "https://github.com/H9z3f/CookingScript/blob/main/images/start.png?raw=true",
-            stream=True
-        ).raw),
-        "meat": Image.open(req.get(
-            "https://github.com/H9z3f/CookingScript/blob/main/images/meat.png?raw=true",
-            stream=True
-        ).raw),
-        "eggs": Image.open(req.get(
-            "https://github.com/H9z3f/CookingScript/blob/main/images/eggs.png?raw=true",
-            stream=True
-        ).raw),
-        "vegetable": Image.open(req.get(
-            "https://github.com/H9z3f/CookingScript/blob/main/images/vegetable.png?raw=true",
-            stream=True
-        ).raw),
-        "fruit": Image.open(req.get(
-            "https://github.com/H9z3f/CookingScript/blob/main/images/fruit.png?raw=true",
-            stream=True
-        ).raw)
-    }
-    main()
+    print("Loading image data...")
+    try:
+        imageData = {
+            "eggs": open(get(
+                "https://github.com/H9z3f/CookingScript/blob/main/images/eggs.png?raw=true",
+                stream=True
+            ).raw),
+            "fire": open(get(
+                "https://github.com/H9z3f/CookingScript/blob/main/images/fire.png?raw=true",
+                stream=True
+            ).raw),
+            "fruit": open(get(
+                "https://github.com/H9z3f/CookingScript/blob/main/images/fruit.png?raw=true",
+                stream=True
+            ).raw),
+            "knife": open(get(
+                "https://github.com/H9z3f/CookingScript/blob/main/images/knife.png?raw=true",
+                stream=True
+            ).raw),
+            "meat": open(get(
+                "https://github.com/H9z3f/CookingScript/blob/main/images/meat.png?raw=true",
+                stream=True
+            ).raw),
+            "start": open(get(
+                "https://github.com/H9z3f/CookingScript/blob/main/images/start.png?raw=true",
+                stream=True
+            ).raw),
+            "vegetable": open(get(
+                "https://github.com/H9z3f/CookingScript/blob/main/images/vegetable.png?raw=true",
+                stream=True
+            ).raw),
+            "water": open(get(
+                "https://github.com/H9z3f/CookingScript/blob/main/images/water.png?raw=true",
+                stream=True
+            ).raw),
+            "whisk": open(get(
+                "https://github.com/H9z3f/CookingScript/blob/main/images/whisk.png?raw=true",
+                stream=True
+            ).raw),
+        }
+    except UnidentifiedImageError:
+        choice = confirm(text="The script is outdated.\n"
+                              "Please download the latest version from the link:\n"
+                              "https://github.com/H9z3f/CookingScript/raw/main/CookingScript.exe",
+                         buttons=["Open", "Copy"])
+        match choice:
+            case "Open":
+                open_new("https://github.com/H9z3f/CookingScript/raw/main/CookingScript.exe")
+            case "Copy":
+                copy("https://github.com/H9z3f/CookingScript/raw/main/CookingScript.exe")
+        sys.exit()
+    else:
+        alert(text="Choose the dish you are interested in.\n"
+                   "Get close to the stove and press the 'e' key.\n"
+                   "To change the recipe or stop the operation press the 'esc' key.", button="Start")
+        main()
